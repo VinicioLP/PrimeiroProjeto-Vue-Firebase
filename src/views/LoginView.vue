@@ -67,7 +67,6 @@
             Ainda não tem uma conta?
             <router-link to="/register">Crie uma</router-link>
           </p>
-
         </div>
       </div>
     </div>
@@ -266,7 +265,7 @@ export default {
 
 .login-btn:hover {
   transform: translateY(-4px);
-  box-shadow: 0 15px 30px rgba(255, 255, 255, 0.15);
+  box-shadow: 0 15px 30px;
 }
 
 .login-btn:disabled {
@@ -363,7 +362,6 @@ export default {
   border-bottom-color: #fff;
 }
 
-
 .spinner {
   width: 20px;
   height: 20px;
@@ -378,7 +376,6 @@ export default {
     transform: rotate(360deg);
   }
 }
-
 
 .fade-enter-active,
 .fade-leave-active {

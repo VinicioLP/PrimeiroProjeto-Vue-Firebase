@@ -17,6 +17,12 @@
     <section class="featured">
       <div class="container">
         <h2>Coleção Destaque</h2>
+        <ShirtCatalog featuredOnly :showHeader="false" />
+      </div>
+    </section>
+
+    <section class="all-products">
+      <div class="container">
         <ShirtCatalog />
       </div>
     </section>
@@ -121,7 +127,7 @@ export default {
 .hero-cta:hover {
   background: var(--accent-dark);
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(255, 92, 152, 0.18);
+  box-shadow: 0 12px 30px rgba(255, 255, 255, 0.15);
 }
 
 .hero-cta::after {

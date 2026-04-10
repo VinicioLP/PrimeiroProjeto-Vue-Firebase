@@ -1,15 +1,14 @@
 <template>
   <div class="shirt-catalog">
     <div class="container">
-      <div class="catalog-header">
-        <h2 class="catalog-title">Catálogo de Camisetas</h2>
+      <div v-if="showHeader" class="catalog-header">
+        <h2 class="catalog-title">{{ catalogTitle }}</h2>
         <p class="catalog-subtitle">
           Descubra nossa coleção exclusiva de streetwear premium
         </p>
       </div>
 
-      <!-- Filters (placeholder for future implementation) -->
-      <div class="catalog-filters">
+      <div v-if="!featuredOnly" class="catalog-filters">
         <button
           v-for="cat in categories"
           :key="cat"
@@ -28,7 +27,21 @@
 
       <div v-else-if="error" class="error">
         <div class="error-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
         </div>
         <h3>Erro ao carregar produtos</h3>
         <p>{{ error }}</p>
@@ -39,7 +52,21 @@
 
       <div v-else-if="shirts.length === 0" class="catalog-empty">
         <div class="catalog-empty-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="64"
+            height="64"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <path d="M16 10a4 4 0 0 1-8 0" />
+          </svg>
         </div>
         <h3>Nenhum produto encontrado</h3>
         <p>Não há produtos disponíveis no momento.</p>
@@ -78,22 +105,44 @@ export default {
     ShirtCard,
     ProductModal,
   },
-  setup() {
+  props: {
+    featuredOnly: {
+      type: Boolean,
+      default: false,
+    },
+    showHeader: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  setup(props) {
     const shirtStore = useShirtStore();
     const cartStore = useCartStore();
     const selectedCategory = ref("Todos");
     const selectedProduct = ref(null);
 
+    const baseShirts = computed(() => {
+      return props.featuredOnly
+        ? shirtStore.shirts.filter((shirt) => shirt.featured)
+        : shirtStore.shirts;
+    });
+
     const filteredShirts = computed(() => {
       if (selectedCategory.value === "Todos") {
-        return shirtStore.shirts;
+        return baseShirts.value;
       }
-      return shirtStore.shirts.filter(
-        (shirt) => shirt.category === selectedCategory.value
+      return baseShirts.value.filter(
+        (shirt) => shirt.category === selectedCategory.value,
       );
     });
 
     const categories = ["Todos", "Basic", "Graphic", "Hoodie"];
+
+    const catalogTitle = computed(() => {
+      return props.featuredOnly
+        ? "Camisetas em Destaque"
+        : "Catálogo de Camisetas";
+    });
 
     const addToCart = (shirt) => {
       cartStore.addItem(shirt);
@@ -123,6 +172,7 @@ export default {
       selectedCategory,
       selectedProduct,
       categories,
+      catalogTitle,
       loading: computed(() => shirtStore.loading),
       error: computed(() => shirtStore.error),
       addToCart,
@@ -130,6 +180,8 @@ export default {
       openModal,
       closeModal,
       retry,
+      featuredOnly: props.featuredOnly,
+      showHeader: props.showHeader,
     };
   },
   mounted() {
