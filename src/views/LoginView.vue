@@ -89,7 +89,9 @@ export default {
     const handleLogin = async () => {
       await authStore.login(email.value, password.value);
       if (authStore.isAuthenticated) {
-        router.push("/dashboard");
+        const redirect =
+          router.currentRoute.value.query.redirect || "/dashboard";
+        router.push(redirect);
       }
     };
 

@@ -3,16 +3,34 @@
     <div class="container container-narrow">
       <div class="cart-header">
         <h1 class="cart-title">Seu Carrinho</h1>
-        <p class="cart-subtitle">{{ cartStore.cartCount }} itens selecionados</p>
+        <p class="cart-subtitle">
+          {{ cartStore.cartCount }} itens selecionados
+        </p>
       </div>
 
       <div v-if="cartStore.items.length === 0" class="cart-empty">
         <div class="empty-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="64"
+            height="64"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <path d="M16 10a4 4 0 0 1-8 0" />
+          </svg>
         </div>
         <h2>Seu carrinho está vazio</h2>
         <p>Explore nossa coleção e encontre algo incrível para você.</p>
-        <router-link to="/" class="btn btn-primary">Voltar às Compras</router-link>
+        <router-link to="/" class="btn btn-primary"
+          >Voltar às Compras</router-link
+        >
       </div>
 
       <div v-else class="cart-content">
@@ -28,12 +46,41 @@
             </div>
             <div class="item-actions">
               <div class="quantity-controls">
-                <button @click="cartStore.updateQuantity(item.id, item.quantity - 1)">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                <button
+                  @click="cartStore.updateQuantity(item.id, item.quantity - 1)"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
                 </button>
                 <span>{{ item.quantity }}</span>
-                <button @click="cartStore.updateQuantity(item.id, item.quantity + 1)">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                <button
+                  @click="cartStore.updateQuantity(item.id, item.quantity + 1)"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
                 </button>
               </div>
               <button class="remove-btn" @click="cartStore.removeItem(item.id)">
@@ -67,16 +114,25 @@
 </template>
 
 <script>
+import { computed } from "vue";
 import { useCartStore } from "../stores/cartStore.js";
+import { useAuthStore } from "../stores/authStore.js";
 import { useRouter } from "vue-router";
 
 export default {
   name: "CartView",
   setup() {
     const cartStore = useCartStore();
+    const authStore = useAuthStore();
     const router = useRouter();
+    const isLoggedIn = computed(() => authStore.isAuthenticated);
 
     const checkout = () => {
+      if (!isLoggedIn.value) {
+        router.push({ name: "Login", query: { redirect: "/cart" } });
+        return;
+      }
+
       alert("Integração de checkout será implementada em breve!");
       cartStore.clearCart();
       router.push("/dashboard");

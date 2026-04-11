@@ -31,7 +31,6 @@
             >Login</router-link
           >
           <router-link
-            v-if="isLoggedIn"
             to="/cart"
             class="nav-link cart-link"
             @click="closeMobileMenu"
