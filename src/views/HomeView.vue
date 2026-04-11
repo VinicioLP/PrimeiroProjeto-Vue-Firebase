@@ -7,9 +7,7 @@
           Estilo urbano para os verdadeiros amantes da cultura de rua. Peças
           exclusivas que definem sua identidade.
         </p>
-        <router-link to="/dashboard" class="hero-cta">
-          Explorar Coleção
-        </router-link>
+        <router-link to="/dashboard" class="hero-cta"> Comprar </router-link>
       </div>
       <div class="scroll-indicator"></div>
     </section>
